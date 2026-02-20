@@ -8,7 +8,6 @@ import {
   CheckCircle2, 
   ChevronRight, 
   Mail, 
-  Phone, 
   MapPin,
   Menu,
   X,
@@ -32,11 +31,11 @@ const LEGAL_CONTENT = {
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Vertreten durch</h4>
-          <p>Geschäftsführung: [Name der Geschäftsführung einfügen]</p>
+          <p>Geschäftsführung: Oleg Lazo</p>
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Kontakt</h4>
-          <p>Telefon: +49 (0) 30 987 654 32<br />E-Mail: info@mycleaningqueens.de</p>
+          <p>E-Mail: info@mycleaningqueens.de</p>
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Registereintrag</h4>
@@ -330,7 +329,7 @@ export default function App() {
           </div>
         </section>
 
-        <section id="about" className="py-32 bg-white overflow-hidden">
+        <section id="about" className="py-32 bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col lg:flex-row items-center gap-20">
               <div className="lg:w-1/2 relative">
@@ -339,9 +338,16 @@ export default function App() {
                   alt="Quality Team" 
                   className="rounded-[4rem] shadow-2xl relative z-10 border-8 border-white"
                 />
-                <div className="absolute -bottom-12 -right-12 bg-purple-900 text-white p-10 rounded-[3rem] shadow-2xl z-20 hidden md:block max-w-[280px]">
-                  <p className="text-3xl font-serif italic mb-2">Qualität</p>
-                  <p className="text-sm font-medium opacity-80 uppercase tracking-widest">Das Siegel von mycleaningqueens</p>
+                <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-xl p-12 rounded-[4rem] shadow-2xl z-20 hidden md:flex flex-col items-center text-center gap-6 border border-purple-100 w-[400px]">
+                  <p className="text-2xl font-serif italic text-purple-900 leading-relaxed">
+                    „Wahre Qualität zeigt sich dort, wo man sie nicht sieht, aber spürt.“
+                  </p>
+                  <div className="flex flex-col items-center gap-4">
+                    <Crown className="w-12 h-12 text-purple-800" />
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                      Das Versprechen der Queens
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="lg:w-1/2">
@@ -385,15 +391,6 @@ export default function App() {
                 </p>
                 
                 <div className="space-y-8 mb-12">
-                  <div className="flex gap-5">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-purple-800 flex-shrink-0 shadow-sm">
-                      <Phone className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-lg">Telefonisch</p>
-                      <p className="text-slate-600">+49 (0) 30 987 654 32</p>
-                    </div>
-                  </div>
                   <div className="flex gap-5">
                     <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-purple-800 flex-shrink-0 shadow-sm">
                       <Mail className="w-6 h-6" />
