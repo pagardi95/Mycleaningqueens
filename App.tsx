@@ -282,7 +282,7 @@ export default function App() {
               "Glanz für Ihre Business-Welt"
             ].map((slogan, i) => (
               <span key={i} className="text-purple-100 text-xl md:text-3xl font-serif italic mx-16 opacity-80">
-                {slogan} <span className="ml-16 opacity-30">✧</span>
+                {slogan} <span className="ml-16 opacity-30">★</span>
               </span>
             ))}
           </div>
@@ -295,7 +295,7 @@ export default function App() {
               "Glanz für Ihre Business-Welt"
             ].map((slogan, i) => (
               <span key={i} className="text-purple-100 text-xl md:text-3xl font-serif italic mx-16 opacity-80">
-                {slogan} <span className="ml-16 opacity-30">✧</span>
+                {slogan} <span className="ml-16 opacity-30">★</span>
               </span>
             ))}
           </div>
@@ -306,7 +306,7 @@ export default function App() {
             <div className="text-center max-w-3xl mx-auto mb-20">
               <h2 className="text-4xl md:text-6xl font-serif font-bold mb-8">Königlicher Service für Ihre Räume.</h2>
               <p className="text-xl text-slate-600 leading-relaxed italic">
-                „Wir behandeln Ihr Objekt, als wäre es unser eigener Palast.“
+                "Wir behandeln Ihr Objekt, als wäre es unser eigener Palast."
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -340,7 +340,7 @@ export default function App() {
                 />
                 <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-xl p-12 rounded-[4rem] shadow-2xl z-20 hidden md:flex flex-col items-center text-center gap-6 border border-purple-100 w-[400px]">
                   <p className="text-2xl font-serif italic text-purple-900 leading-relaxed">
-                    „Wahre Qualität zeigt sich dort, wo man sie nicht sieht, aber spürt.“
+                    Wahre Qualität zeigt sich dort, wo man sie nicht sieht, aber spürt.
                   </p>
                   <div className="flex flex-col items-center gap-4">
                     <Crown className="w-12 h-12 text-purple-800" />
@@ -529,7 +529,7 @@ export default function App() {
             </div>
             <div className="flex gap-12 text-slate-400">
               <button onClick={() => setModalContent(LEGAL_CONTENT.impressum)} className="hover:text-white transition-all flex items-center gap-2">
-                <Info className="w-4 h-4" /> Impressum
+                <FileText className="w-4 h-4" /> Impressum
               </button>
               <button onClick={() => setModalContent(LEGAL_CONTENT.datenschutz)} className="hover:text-white transition-all flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" /> Datenschutz
