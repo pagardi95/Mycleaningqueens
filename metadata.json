@@ -1,0 +1,7 @@
+{
+  "name": "mycleaningqueens - Exzellente Gebäudereinigung",
+  "description": "Premium Landingpage für mycleaningqueens. Spezialisierte Reinigung für Fitnessstudios, Büros und Eventlocations mit Fokus auf Lead-Generierung.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
