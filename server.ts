@@ -37,7 +37,7 @@ async function startServer() {
 
     try {
       const { data, error } = await resend.emails.send({
-        from: "mycleaningqueens <onboarding@resend.dev>", // Replace with verified domain in production
+        from: "mycleaningqueens <info@mycleaningqueens.de>", 
         to: ["info@mycleaningqueens.de"],
         subject: `Neue Anfrage von ${name} (${company || 'Privat'})`,
         html: `

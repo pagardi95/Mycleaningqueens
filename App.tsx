@@ -252,7 +252,9 @@ export default function App() {
     
     try {
       console.log("Sending request to /api/quote...");
-      const response = await fetch('/api/quote', {
+      // Using a more robust URL construction to avoid "pattern" errors in some environments
+      const targetUrl = new URL('/api/quote', window.location.origin).href;
+      const response = await fetch(targetUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
