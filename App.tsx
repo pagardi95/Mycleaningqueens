@@ -252,7 +252,8 @@ export default function App() {
     
     try {
       console.log("Sending request to /api/quote...");
-      const response = await fetch('/api/quote', {
+      const apiUrl = `${window.location.origin}/api/quote`;
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
