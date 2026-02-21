@@ -246,14 +246,32 @@ export default function App() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulating sending to info@mycleaningqueens.de
-    setTimeout(() => {
+    
+    try {
+      const response = await fetch('/api/quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        alert("Fehler beim Senden der Anfrage. Bitte versuchen Sie es später erneut.");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Ein Netzwerkfehler ist aufgetreten.");
+    } finally {
       setLoading(false);
-      setSubmitted(true);
-    }, 1500);
+    }
   };
 
   return (
@@ -306,25 +324,32 @@ export default function App() {
             <p className="text-center text-slate-400 font-bold uppercase tracking-[0.3em] text-xs mb-16">
               Royale Sauberkeit im Einsatz bei
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-20 md:gap-40">
-              <a href="https://www.holmesplace.de" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-6 group grayscale hover:grayscale-0 transition-all duration-500">
+            <div className="flex flex-wrap justify-center items-center gap-16 md:gap-32">
+              <a href="https://www.holmesplace.de" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-6 group transition-all duration-500">
                 <img 
                   src="https://almazois.gr/wp-content/uploads/2019/11/almazois-pita-2020-dorothetes-holmes-place-logo.png" 
                   alt="Holmes Place" 
-                  className="h-12 md:h-20 w-auto opacity-70 group-hover:opacity-100 transition-opacity"
+                  className="h-12 md:h-20 w-auto opacity-90 group-hover:opacity-100 transition-opacity"
                   referrerPolicy="no-referrer"
                 />
-                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em] group-hover:text-purple-800 transition-colors">Premium Fitness</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] group-hover:text-purple-800 transition-colors">Premium Fitness</span>
               </a>
-              <a href="https://www.wearethestorm.de" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-6 group grayscale hover:grayscale-0 transition-all duration-500">
+              <a href="https://www.wearethestorm.de" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-6 group transition-all duration-500">
                 <img 
                   src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKCFfA2UZlE14Kvo31b5zu0y4TQ4xUSPId7Q&s" 
                   alt="The Storm" 
-                  className="h-12 md:h-20 w-auto opacity-70 group-hover:opacity-100 transition-opacity"
+                  className="h-12 md:h-20 w-auto opacity-90 group-hover:opacity-100 transition-opacity"
                   referrerPolicy="no-referrer"
                 />
-                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em] group-hover:text-purple-800 transition-colors">Business & Creative</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] group-hover:text-purple-800 transition-colors">Boutique Fitness</span>
               </a>
+              <div className="flex flex-col items-center gap-6 group transition-all duration-500">
+                <div className="h-12 md:h-20 flex items-center justify-center gap-3 text-slate-800">
+                  <Stethoscope className="w-10 h-10 md:w-14 md:h-14 text-purple-800" />
+                  <span className="text-xl md:text-2xl font-serif font-bold tracking-tight">PraxisZentrum</span>
+                </div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Medizinische Hygiene</span>
+              </div>
             </div>
           </div>
         </section>
