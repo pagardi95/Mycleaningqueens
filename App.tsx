@@ -301,6 +301,34 @@ export default function App() {
           </div>
         </div>
 
+        <section className="py-24 bg-white border-b border-slate-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <p className="text-center text-slate-400 font-bold uppercase tracking-[0.3em] text-xs mb-16">
+              Royale Sauberkeit im Einsatz bei
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-20 md:gap-40">
+              <a href="https://www.holmesplace.de" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-6 group grayscale hover:grayscale-0 transition-all duration-500">
+                <img 
+                  src="https://almazois.gr/wp-content/uploads/2019/11/almazois-pita-2020-dorothetes-holmes-place-logo.png" 
+                  alt="Holmes Place" 
+                  className="h-12 md:h-20 w-auto opacity-70 group-hover:opacity-100 transition-opacity"
+                  referrerPolicy="no-referrer"
+                />
+                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em] group-hover:text-purple-800 transition-colors">Premium Fitness</span>
+              </a>
+              <a href="https://www.wearethestorm.de" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-6 group grayscale hover:grayscale-0 transition-all duration-500">
+                <img 
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKCFfA2UZlE14Kvo31b5zu0y4TQ4xUSPId7Q&s" 
+                  alt="The Storm" 
+                  className="h-12 md:h-20 w-auto opacity-70 group-hover:opacity-100 transition-opacity"
+                  referrerPolicy="no-referrer"
+                />
+                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em] group-hover:text-purple-800 transition-colors">Business & Creative</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
         <section id="services" className="py-32 bg-slate-50">
           <div className="max-w-7xl mx-auto px-6">
             <div className="text-center max-w-3xl mx-auto mb-20">
@@ -332,19 +360,14 @@ export default function App() {
         <section id="about" className="py-32 bg-white">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col lg:flex-row items-center gap-20">
-              <div className="lg:w-1/2 relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1581578731522-638de748f963?auto=format&fit=crop&q=80&w=1000" 
-                  alt="Quality Team" 
-                  className="rounded-[4rem] shadow-2xl relative z-10 border-8 border-white"
-                />
-                <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-xl p-12 rounded-[4rem] shadow-2xl z-20 hidden md:flex flex-col items-center text-center gap-6 border border-purple-100 w-[400px]">
-                  <p className="text-2xl font-serif italic text-purple-900 leading-relaxed">
+              <div className="lg:w-1/2">
+                <div className="bg-purple-50 p-16 md:p-24 rounded-[4rem] border border-purple-100 shadow-inner flex flex-col items-center text-center gap-10">
+                  <p className="text-3xl md:text-4xl font-serif italic text-purple-900 leading-relaxed">
                     Wahre Qualität zeigt sich dort, wo man sie nicht sieht, aber spürt.
                   </p>
-                  <div className="flex flex-col items-center gap-4">
-                    <Crown className="w-12 h-12 text-purple-800" />
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                  <div className="flex flex-col items-center gap-6">
+                    <Crown className="w-16 h-16 text-purple-800" />
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.4em]">
                       Das Versprechen der Queens
                     </p>
                   </div>
