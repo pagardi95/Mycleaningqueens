@@ -251,6 +251,7 @@ export default function App() {
     setLoading(true);
     
     try {
+      console.log("Sending request to /api/quote...");
       const response = await fetch('/api/quote', {
         method: 'POST',
         headers: {
@@ -259,16 +260,18 @@ export default function App() {
         body: JSON.stringify(formData),
       });
 
+      console.log("Response status:", response.status);
       const result = await response.json();
+      console.log("Response data:", result);
 
       if (result.success) {
         setSubmitted(true);
       } else {
-        alert("Fehler beim Senden der Anfrage. Bitte versuchen Sie es später erneut.");
+        alert(`Fehler: ${result.error || "Unbekannter Fehler"}`);
       }
     } catch (error) {
-      console.error("Submission error:", error);
-      alert("Ein Netzwerkfehler ist aufgetreten.");
+      console.error("Submission error details:", error);
+      alert(`Netzwerkfehler: ${error instanceof Error ? error.message : "Verbindung zum Server fehlgeschlagen"}`);
     } finally {
       setLoading(false);
     }

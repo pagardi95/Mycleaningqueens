@@ -9,8 +9,14 @@ async function startServer() {
 
   app.use(express.json());
 
+  // Health check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", message: "Server is running" });
+  });
+
   // API Route for sending emails
   app.post("/api/quote", async (req, res) => {
+    console.log("Received quote request:", req.body);
     const { name, email, company, buildingType, message } = req.body;
 
     const resendKey = process.env.RESEND_API_KEY;
