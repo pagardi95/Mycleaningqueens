@@ -251,20 +251,41 @@ export default function App() {
     setLoading(true);
     
     try {
+      // Robust URL construction
+      const getBaseUrl = () => {
+        try {
+          // Try to get origin, fallback to constructing it from href
+          if (window.location.origin && window.location.origin !== 'null') {
+            return window.location.origin;
+          }
+          const url = new URL(window.location.href);
+          return `${url.protocol}//${url.host}`;
+        } catch (e) {
+          return ''; // Fallback to relative
+        }
+      };
+
+      const baseUrl = getBaseUrl();
+      const apiUrl = baseUrl ? `${baseUrl}/api/quote` : '/api/quote';
+      const healthUrl = baseUrl ? `${baseUrl}/api/health` : '/api/health';
+
+      console.log("Target API URL:", apiUrl);
+
       // First, check if server is alive
-      console.log("Checking server health...");
-      const healthCheck = await fetch('/api/health').catch(() => null);
-      if (healthCheck) {
+      console.log("Checking server health at:", healthUrl);
+      const healthCheck = await fetch(healthUrl).catch((err) => {
+        console.warn("Health check fetch failed:", err);
+        return null;
+      });
+      
+      if (healthCheck && healthCheck.ok) {
         const healthData = await healthCheck.json();
         console.log("Server health:", healthData);
-      } else {
-        console.warn("Server health check failed to fetch");
       }
 
-      console.log("Sending request to /api/quote...");
+      console.log("Sending request to:", apiUrl);
       
-      // Fix for "The string did not match the expected pattern"
-      const response = await fetch('/api/quote', {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
