@@ -251,11 +251,19 @@ export default function App() {
     setLoading(true);
     
     try {
+      // First, check if server is alive
+      console.log("Checking server health...");
+      const healthCheck = await fetch('/api/health').catch(() => null);
+      if (healthCheck) {
+        const healthData = await healthCheck.json();
+        console.log("Server health:", healthData);
+      } else {
+        console.warn("Server health check failed to fetch");
+      }
+
       console.log("Sending request to /api/quote...");
       
       // Fix for "The string did not match the expected pattern"
-      // Instead of relying on URL object which can fail in some iframe environments,
-      // we use a direct relative path which Vite/Express handles correctly.
       const response = await fetch('/api/quote', {
         method: 'POST',
         headers: {

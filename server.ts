@@ -11,14 +11,21 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
+  // Request logger
+  app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`);
+    next();
+  });
+
   // Health check
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", message: "Server is running" });
+    console.log("Health check requested");
+    res.json({ status: "ok", message: "Server is running", env: !!process.env.RESEND_API_KEY });
   });
 
   // API Route for sending emails
   app.post("/api/quote", async (req, res) => {
-    console.log("Received quote request:", req.body);
+    console.log("POST /api/quote reached with body:", req.body);
     const { name, email, company, buildingType, message } = req.body;
 
     const resendKey = process.env.RESEND_API_KEY;
