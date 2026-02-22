@@ -37,7 +37,7 @@ async function startServer() {
 
     try {
       const { data, error } = await resend.emails.send({
-        from: "mycleaningqueens <info@mycleaningqueens.de>", 
+        from: "mycleaningqueens <info@send.mycleaningqueens.de>", 
         to: ["info@mycleaningqueens.de"],
         subject: `Neue Anfrage von ${name} (${company || 'Privat'})`,
         html: `
