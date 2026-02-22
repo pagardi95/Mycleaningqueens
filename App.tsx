@@ -272,11 +272,15 @@ export default function App() {
       if (result.success) {
         setSubmitted(true);
       } else {
-        alert(`Fehler: ${result.error || "Unbekannter Fehler"}`);
+        const errorMsg = typeof result.error === 'object' 
+          ? JSON.stringify(result.error) 
+          : (result.error || "Unbekannter Fehler");
+        alert(`Fehler: ${errorMsg}`);
       }
     } catch (error) {
       console.error("Submission error details:", error);
-      alert(`Netzwerkfehler: ${error instanceof Error ? error.message : "Verbindung zum Server fehlgeschlagen"}`);
+      const errorMsg = error instanceof Error ? error.message : "Verbindung zum Server fehlgeschlagen";
+      alert(`Netzwerkfehler: ${errorMsg}`);
     } finally {
       setLoading(false);
     }

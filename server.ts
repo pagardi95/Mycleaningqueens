@@ -53,13 +53,21 @@ async function startServer() {
 
       if (error) {
         console.error("Resend Error:", error);
-        return res.status(500).json({ success: false, error: error.message });
+        // Ensure we send a useful error message
+        return res.status(400).json({ 
+          success: false, 
+          error: error.message || error,
+          details: error 
+        });
       }
 
       res.json({ success: true, data });
     } catch (err) {
       console.error("Server Error:", err);
-      res.status(500).json({ success: false, error: "Interner Serverfehler" });
+      res.status(500).json({ 
+        success: false, 
+        error: err instanceof Error ? err.message : "Interner Serverfehler" 
+      });
     }
   });
 
