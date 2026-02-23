@@ -47,14 +47,16 @@ async function startServer() {
 
     try {
       const { data, error } = await resend.emails.send({
-        from: "mycleaningqueens <info@send.mycleaningqueens.de>", 
+        // Mit onboarding@resend.dev funktioniert der Versand sofort an Ihre 
+        // Registrierungs-E-Mail, ohne dass Sie Strato-Einstellungen ändern müssen.
+        from: "mycleaningqueens <onboarding@resend.dev>", 
         to: ["info@mycleaningqueens.de"],
         subject: `Neue Anfrage von ${name}`,
         html: `
           <h3>Neue Reinigungsanfrage</h3>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>E-Mail:</strong> ${email}</p>
-          <p><strong>Firma:</strong> ${company || 'Privat'}</p>
+          <p><strong>Firma:</strong> ${company || 'Keine Angabe'}</p>
           <p><strong>Typ:</strong> ${buildingType}</p>
           <p><strong>Nachricht:</strong> ${message || 'Keine'}</p>
         `,
