@@ -2,13 +2,17 @@ import express from "express";
 import { Resend } from "resend";
 import path from "path";
 import cors from "cors";
+import fs from "fs";
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
-  const isProd = process.env.NODE_ENV === "production";
+  
+  // Robust production check: check env var OR existence of dist folder
+  const isProd = process.env.NODE_ENV === "production" || fs.existsSync(path.join(process.cwd(), "dist"));
 
-  console.log(`Starting server in ${isProd ? "PRODUCTION" : "DEVELOPMENT"} mode`);
+  console.log(`[SERVER] Mode: ${isProd ? "PRODUCTION" : "DEVELOPMENT"}`);
+  console.log(`[SERVER] Working Directory: ${process.cwd()}`);
 
   app.use(cors());
   app.use(express.json());
@@ -32,7 +36,7 @@ async function startServer() {
 
   // API Route for sending emails
   app.post("/api/quote", async (req, res) => {
-    console.log("POST /api/quote reached!");
+    console.log(`[API] POST /api/quote - Body:`, JSON.stringify(req.body));
     const { name, email, company, buildingType, message } = req.body;
 
     const resendKey = process.env.RESEND_API_KEY;
@@ -83,26 +87,46 @@ async function startServer() {
     }
   });
 
-  // Vite middleware for development
-  if (!isProd) {
+  // Production: Serve static files from dist folder
+  if (isProd) {
+    const distPath = path.resolve(process.cwd(), "dist");
+    console.log(`[SERVER] Serving static files from: ${distPath}`);
+    
+    app.use(express.static(distPath));
+    
+    // SPA Fallback: All non-API routes serve index.html
+    app.get("*", (req, res, next) => {
+      if (req.url.startsWith("/api/")) return next();
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  } else {
+    // Development: Use Vite middleware
+    console.log("[SERVER] Initializing Vite middleware...");
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
-  } else {
-    // Production: Serve static files from dist folder
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
   }
 
+  // Final 404 handler for anything not caught (especially API)
+  app.use((req, res) => {
+    console.log(`[SERVER] 404 Not Found: ${req.method} ${req.url}`);
+    res.status(404).json({ 
+      success: false, 
+      error: "Endpoint not found",
+      path: req.url,
+      method: req.method
+    });
+  });
+
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`[SERVER] Running at http://0.0.0.0:${PORT}`);
   });
 }
 
-startServer();
+startServer().catch(err => {
+  console.error("[SERVER] Failed to start:", err);
+  process.exit(1);
+});
