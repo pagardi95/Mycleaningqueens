@@ -237,6 +237,7 @@ export default function App() {
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Modal states - storing the whole object to show content
   const [modalContent, setModalContent] = useState<{ title: string; body: React.ReactNode } | null>(null);
@@ -244,48 +245,18 @@ export default function App() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (error) setError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     
     try {
-      // Robust URL construction
-      const getBaseUrl = () => {
-        try {
-          // Try to get origin, fallback to constructing it from href
-          if (window.location.origin && window.location.origin !== 'null') {
-            return window.location.origin;
-          }
-          const url = new URL(window.location.href);
-          return `${url.protocol}//${url.host}`;
-        } catch (e) {
-          return ''; // Fallback to relative
-        }
-      };
-
-      const baseUrl = getBaseUrl();
-      const apiUrl = baseUrl ? `${baseUrl}/api/quote` : '/api/quote';
-      const healthUrl = baseUrl ? `${baseUrl}/api/health` : '/api/health';
-
-      console.log("Target API URL:", apiUrl);
-
-      // First, check if server is alive
-      console.log("Checking server health at:", healthUrl);
-      const healthCheck = await fetch(healthUrl).catch((err) => {
-        console.warn("Health check fetch failed:", err);
-        return null;
-      });
+      console.log("Sending request to /api/quote...");
       
-      if (healthCheck && healthCheck.ok) {
-        const healthData = await healthCheck.json();
-        console.log("Server health:", healthData);
-      }
-
-      console.log("Sending request to:", apiUrl);
-      
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/quote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -294,22 +265,20 @@ export default function App() {
         body: JSON.stringify(formData),
       });
 
-      console.log("Response status:", response.status);
       const result = await response.json();
-      console.log("Response data:", result);
+      console.log("Server response:", result);
 
       if (result.success) {
         setSubmitted(true);
       } else {
-        const errorMsg = typeof result.error === 'object' 
-          ? JSON.stringify(result.error) 
-          : (result.error || "Unbekannter Fehler");
-        alert(`Fehler: ${errorMsg}`);
+        const msg = typeof result.error === 'object' 
+          ? (result.error.message || JSON.stringify(result.error)) 
+          : (result.error || "Ein unbekannter Fehler ist aufgetreten.");
+        setError(msg);
       }
-    } catch (error) {
-      console.error("Submission error details:", error);
-      const errorMsg = error instanceof Error ? error.message : "Verbindung zum Server fehlgeschlagen";
-      alert(`Netzwerkfehler: ${errorMsg}`);
+    } catch (err) {
+      console.error("Fetch error:", err);
+      setError("Verbindung zum Server fehlgeschlagen. Bitte versuchen Sie es später erneut.");
     } finally {
       setLoading(false);
     }
@@ -570,6 +539,14 @@ export default function App() {
                         placeholder="Z.B. m², Reinigungsintervalle oder Sonderwünsche"
                       ></textarea>
                     </div>
+
+                    {error && (
+                      <div className="mb-8 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
+                        <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <p className="text-sm font-medium">{error}</p>
+                      </div>
+                    )}
+
                     <button 
                       type="submit" 
                       disabled={loading}

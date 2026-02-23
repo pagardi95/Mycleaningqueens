@@ -13,8 +13,13 @@ async function startServer() {
 
   // Request logger
   app.use((req, res, next) => {
-    console.log(`Incoming request: ${req.method} ${req.url}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
+  });
+
+  // Test route
+  app.get("/api/test", (req, res) => {
+    res.json({ message: "API is reachable" });
   });
 
   // Health check
@@ -25,17 +30,15 @@ async function startServer() {
 
   // API Route for sending emails
   app.post("/api/quote", async (req, res) => {
-    console.log("POST /api/quote reached with body:", req.body);
+    console.log("POST /api/quote reached!");
     const { name, email, company, buildingType, message } = req.body;
 
     const resendKey = process.env.RESEND_API_KEY;
 
     if (!resendKey) {
-      console.warn("RESEND_API_KEY is missing. Email not sent, but logging data:");
-      console.log(req.body);
       return res.json({ 
         success: true, 
-        message: "Simulation: Daten empfangen (API Key fehlt für echten Versand).",
+        message: "Simulation: Daten empfangen (API Key fehlt).",
         data: req.body 
       });
     }
@@ -46,52 +49,42 @@ async function startServer() {
       const { data, error } = await resend.emails.send({
         from: "mycleaningqueens <info@send.mycleaningqueens.de>", 
         to: ["info@mycleaningqueens.de"],
-        subject: `Neue Anfrage von ${name} (${company || 'Privat'})`,
+        subject: `Neue Anfrage von ${name}`,
         html: `
-          <h1>Neue Reinigungsanfrage</h1>
+          <h3>Neue Reinigungsanfrage</h3>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>E-Mail:</strong> ${email}</p>
-          <p><strong>Firma:</strong> ${company || 'Keine Angabe'}</p>
-          <p><strong>Objekttyp:</strong> ${buildingType}</p>
-          <p><strong>Nachricht:</strong></p>
-          <p>${message || 'Keine Nachricht hinterlassen.'}</p>
+          <p><strong>Firma:</strong> ${company || 'Privat'}</p>
+          <p><strong>Typ:</strong> ${buildingType}</p>
+          <p><strong>Nachricht:</strong> ${message || 'Keine'}</p>
         `,
       });
 
       if (error) {
-        console.error("Resend Error:", error);
-        // Ensure we send a useful error message
-        return res.status(400).json({ 
-          success: false, 
-          error: error.message || error,
-          details: error 
-        });
+        console.error("Resend API Error Details:", JSON.stringify(error, null, 2));
+        // If it's a validation error about the 'to' address with onboarding@resend.dev
+        if (error.name === 'validation_error' && error.message.includes('onboarding@resend.dev')) {
+          return res.status(400).json({ 
+            success: false, 
+            error: "Im Testmodus (onboarding@resend.dev) können E-Mails nur an die im Resend-Konto hinterlegte Adresse gesendet werden. Bitte verifizieren Sie Ihre Domain send.mycleaningqueens.de bei Strato, um an info@mycleaningqueens.de zu senden." 
+          });
+        }
+        return res.status(400).json({ success: false, error: error });
       }
 
       res.json({ success: true, data });
     } catch (err) {
-      console.error("Server Error:", err);
-      res.status(500).json({ 
-        success: false, 
-        error: err instanceof Error ? err.message : "Interner Serverfehler" 
-      });
+      console.error("Server Exception:", err);
+      res.status(500).json({ success: false, error: "Interner Serverfehler" });
     }
   });
 
-  // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    // Production static serving
-    app.use(express.static(path.join(process.cwd(), "dist")));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(process.cwd(), "dist", "index.html"));
-    });
-  }
+  // Vite middleware
+  const vite = await createViteServer({
+    server: { middlewareMode: true },
+    appType: "spa",
+  });
+  app.use(vite.middlewares);
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
