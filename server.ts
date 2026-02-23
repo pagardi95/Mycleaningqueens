@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import { Resend } from "resend";
 import path from "path";
 import cors from "cors";
@@ -7,6 +6,9 @@ import cors from "cors";
 async function startServer() {
   const app = express();
   const PORT = 3000;
+  const isProd = process.env.NODE_ENV === "production";
+
+  console.log(`Starting server in ${isProd ? "PRODUCTION" : "DEVELOPMENT"} mode`);
 
   app.use(cors());
   app.use(express.json());
@@ -82,7 +84,8 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (!isProd) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
