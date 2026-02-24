@@ -13,9 +13,16 @@ async function startServer() {
 
   console.log(`[SERVER] Starting in ${isProd ? "PRODUCTION" : "DEVELOPMENT"} mode`);
   console.log(`[SERVER] Directory: ${process.cwd()}`);
+  console.log(`[SERVER] NODE_ENV: ${process.env.NODE_ENV}`);
 
   app.use(cors());
   app.use(express.json());
+
+  // Global Request Logger
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+  });
 
   // --- API ROUTES FIRST ---
   
@@ -64,6 +71,11 @@ async function startServer() {
 
   app.post("/api/quote", handleQuote);
   app.post("/api/quote/", handleQuote);
+  
+  // Test GET route to verify API is reachable
+  app.get("/api/quote", (req, res) => {
+    res.json({ message: "Use POST to send a quote request" });
+  });
 
   // --- STATIC FILES & SPA FALLBACK ---
 
