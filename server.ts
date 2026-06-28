@@ -43,10 +43,13 @@ async function startServer() {
     }
 
     const resend = new Resend(resendKey);
+    const fromEmail = process.env.RESEND_FROM_EMAIL || "mycleaningqueens <onboarding@resend.dev>";
+
     try {
       const { data, error } = await resend.emails.send({
-        from: "mycleaningqueens <onboarding@resend.dev>", 
+        from: fromEmail, 
         to: ["info@mycleaningqueens.de"],
+        replyTo: email,
         subject: `Neue Anfrage von ${name}`,
         html: `
           <h3>Neue Reinigungsanfrage</h3>

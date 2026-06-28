@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   FileText
 } from 'lucide-react';
+import { ContactFormPage } from './src/components/ContactFormPage';
 
 // Legal Content Constants - More detailed for German law compliance
 const LEGAL_CONTENT = {
@@ -130,7 +131,7 @@ const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: string; chi
   );
 };
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{ currentPath: string; navigateTo: (path: string) => void }> = ({ currentPath, navigateTo }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -141,33 +142,60 @@ const Navbar: React.FC = () => {
   }, []);
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsOpen(false);
+    if (currentPath !== '/') {
+      navigateTo('/');
+      // Allow a brief delay for rendering home page then scroll
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+    setIsOpen(false);
   };
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled || currentPath !== '/' ? 'bg-white shadow-md py-3' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-        <div className="flex items-center gap-2 group cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <Crown className={`w-8 h-8 ${scrolled ? 'text-purple-800' : 'text-white'}`} />
-          <span className={`text-2xl font-serif font-bold tracking-tight ${scrolled ? 'text-purple-900' : 'text-white'}`}>
+        <div 
+          className="flex items-center gap-2 group cursor-pointer" 
+          onClick={() => {
+            if (currentPath !== '/') {
+              navigateTo('/');
+            } else {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+        >
+          <Crown className={`w-8 h-8 ${scrolled || currentPath !== '/' ? 'text-purple-800' : 'text-white'}`} />
+          <span className={`text-2xl font-serif font-bold tracking-tight ${scrolled || currentPath !== '/' ? 'text-purple-900' : 'text-white'}`}>
             mycleaningqueens
           </span>
         </div>
         
         <div className="hidden md:flex items-center gap-10">
-          <button onClick={() => scrollToSection('services')} className={`hover:text-purple-500 transition-colors ${scrolled ? 'text-slate-600' : 'text-slate-200'}`}>Leistungen</button>
-          <button onClick={() => scrollToSection('about')} className={`hover:text-purple-500 transition-colors ${scrolled ? 'text-slate-600' : 'text-slate-200'}`}>Über uns</button>
-          <button onClick={() => scrollToSection('contact')} className="bg-purple-800 text-white px-6 py-2 rounded-full font-medium hover:bg-purple-700 transition-all shadow-lg hover:shadow-purple-500/20">
-            Angebot anfordern
+          <button onClick={() => scrollToSection('services')} className={`hover:text-purple-500 transition-colors ${scrolled || currentPath !== '/' ? 'text-slate-600' : 'text-slate-200'}`}>Leistungen</button>
+          <button onClick={() => scrollToSection('about')} className={`hover:text-purple-500 transition-colors ${scrolled || currentPath !== '/' ? 'text-slate-600' : 'text-slate-200'}`}>Über uns</button>
+          <button 
+            onClick={() => navigateTo('/kontaktformular')} 
+            className={`px-6 py-2 rounded-full font-medium transition-all shadow-lg hover:shadow-purple-500/20 ${
+              currentPath === '/kontaktformular'
+                ? 'bg-purple-950 text-white'
+                : (scrolled || currentPath !== '/' ? 'bg-purple-800 text-white hover:bg-purple-700' : 'bg-white text-purple-900 hover:bg-purple-50')
+            }`}
+          >
+            Kontakt
           </button>
         </div>
 
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X className={scrolled ? 'text-slate-900' : 'text-white'} /> : <Menu className={scrolled ? 'text-slate-900' : 'text-white'} />}
+          {isOpen ? <X className={scrolled || currentPath !== '/' ? 'text-slate-900' : 'text-white'} /> : <Menu className={scrolled || currentPath !== '/' ? 'text-slate-900' : 'text-white'} />}
         </button>
       </div>
 
@@ -175,7 +203,15 @@ const Navbar: React.FC = () => {
         <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl py-6 px-6 flex flex-col gap-4 animate-in slide-in-from-top">
           <button onClick={() => scrollToSection('services')} className="text-left text-lg font-medium text-slate-800">Leistungen</button>
           <button onClick={() => scrollToSection('about')} className="text-left text-lg font-medium text-slate-800">Über uns</button>
-          <button onClick={() => scrollToSection('contact')} className="bg-purple-800 text-white py-3 rounded-xl text-center font-bold">Jetzt anfragen</button>
+          <button 
+            onClick={() => {
+              navigateTo('/kontaktformular');
+              setIsOpen(false);
+            }} 
+            className="bg-purple-800 text-white py-3 rounded-xl text-center font-bold"
+          >
+            Kontakt
+          </button>
         </div>
       )}
     </nav>
@@ -225,12 +261,27 @@ const ServiceCard: React.FC<{ icon: React.ReactNode, title: string, description:
 );
 
 export default function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
   // Modal states - storing the whole object to show content
   const [modalContent, setModalContent] = useState<{ title: string; body: React.ReactNode } | null>(null);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (path: string) => {
+    window.history.pushState({}, '', path);
+    setCurrentPath(path);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="min-h-screen selection:bg-purple-200">
-      <Navbar />
+      <Navbar currentPath={currentPath} navigateTo={navigateTo} />
       
       {/* Modal is now correctly accessing .body */}
       <Modal 
@@ -241,8 +292,11 @@ export default function App() {
         {modalContent?.body}
       </Modal>
 
-      <main>
-        <Hero />
+      {currentPath === '/kontaktformular' ? (
+        <ContactFormPage navigateTo={navigateTo} />
+      ) : (
+        <main>
+          <Hero />
         
         <div className="bg-purple-900 py-12 overflow-hidden whitespace-nowrap border-y border-purple-800">
           <div className="inline-block animate-marquee">
@@ -422,6 +476,7 @@ export default function App() {
           </div>
         </section>
       </main>
+      )}
 
       <footer className="bg-slate-950 text-white py-20">
         <div className="max-w-7xl mx-auto px-6">
