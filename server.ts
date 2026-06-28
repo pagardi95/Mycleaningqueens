@@ -85,8 +85,8 @@ async function startServer() {
     
     app.use(express.static(distPath));
     
-    // SPA Fallback for production
-    app.get("*", (req, res) => {
+    // SPA Fallback for production (Express 5 syntax)
+    app.get("*all", (req, res) => {
       if (req.url.startsWith("/api/")) return res.status(404).json({ error: "API not found" });
       res.sendFile(path.join(distPath, "index.html"));
     });

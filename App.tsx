@@ -17,7 +17,6 @@ import {
   ShieldCheck,
   FileText
 } from 'lucide-react';
-import { QuoteFormData } from './types';
 
 // Legal Content Constants - More detailed for German law compliance
 const LEGAL_CONTENT = {
@@ -35,7 +34,7 @@ const LEGAL_CONTENT = {
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Kontakt</h4>
-          <p>E-Mail: info@mycleaningqueens.de</p>
+          <p>E-Mail: <a href="mailto:info@mycleaningqueens.de" className="text-purple-600 hover:underline">info@mycleaningqueens.de</a></p>
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Registereintrag</h4>
@@ -66,7 +65,7 @@ const LEGAL_CONTENT = {
         
         <section>
           <h4 className="font-bold text-slate-900 mb-2 uppercase text-xs tracking-widest">2. Verantwortliche Stelle</h4>
-          <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br />DOE Kreativ GmbH<br />Kantstraße 65<br />10627 Berlin<br />E-Mail: info@mycleaningqueens.de</p>
+          <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:<br />DOE Kreativ GmbH<br />Kantstraße 65<br />10627 Berlin<br />E-Mail: <a href="mailto:info@mycleaningqueens.de" className="text-purple-600 hover:underline">info@mycleaningqueens.de</a></p>
         </section>
 
         <section>
@@ -226,64 +225,8 @@ const ServiceCard: React.FC<{ icon: React.ReactNode, title: string, description:
 );
 
 export default function App() {
-  const [formData, setFormData] = useState<QuoteFormData>({
-    name: '',
-    email: '',
-    company: '',
-    buildingType: 'Bürogebäude',
-    area: 500,
-    frequency: 'Täglich',
-    message: ''
-  });
-  const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
   // Modal states - storing the whole object to show content
   const [modalContent, setModalContent] = useState<{ title: string; body: React.ReactNode } | null>(null);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (error) setError(null);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const apiUrl = '/api/quote';
-      console.log(`Sending request to: ${apiUrl}`);
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-      console.log("Server response:", result);
-
-      if (result.success) {
-        setSubmitted(true);
-      } else {
-        const msg = typeof result.error === 'object' 
-          ? (result.error.message || JSON.stringify(result.error)) 
-          : (result.error || "Ein unbekannter Fehler ist aufgetreten.");
-        setError(msg);
-      }
-    } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Verbindung zum Server fehlgeschlagen. Bitte versuchen Sie es später erneut.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen selection:bg-purple-200">
@@ -438,144 +381,42 @@ export default function App() {
           </div>
         </section>
 
-        <section id="contact" className="py-32 bg-slate-50 relative">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex flex-col lg:flex-row gap-20">
-              <div className="lg:w-2/5">
-                <h2 className="text-4xl md:text-6xl font-serif font-bold mb-10 leading-tight">
-                  Starten Sie <span className="text-purple-800">jetzt</span>.
-                </h2>
-                <p className="text-xl text-slate-600 mb-12 leading-relaxed">
-                  Überlassen Sie die Sauberkeit den Profis. Fordern Sie Ihr unverbindliches Angebot an – wir melden uns innerhalb von 24h.
-                </p>
-                
-                <div className="space-y-8 mb-12">
-                  <div className="flex gap-5">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-purple-800 flex-shrink-0 shadow-sm">
-                      <Mail className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-lg">Direkt per Mail</p>
-                      <p className="text-slate-600">info@mycleaningqueens.de</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-5">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-purple-800 flex-shrink-0 shadow-sm">
-                      <MapPin className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-lg">Zentrale Berlin</p>
-                      <p className="text-slate-600">Kantstraße 65, 10627 Berlin</p>
-                    </div>
-                  </div>
+        <section id="contact" className="py-32 bg-slate-50 relative overflow-hidden">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <div className="inline-flex items-center gap-2 bg-purple-50 px-5 py-2 rounded-full text-purple-800 border border-purple-100 mb-8">
+              <Mail className="w-5 h-5" />
+              <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em]">Kontaktieren Sie uns</span>
+            </div>
+            
+            <h2 className="text-4xl md:text-6xl font-serif font-bold mb-8 leading-tight text-slate-950">
+              Bereit für royale <span className="text-purple-800 italic">Sauberkeit</span>?
+            </h2>
+            
+            <p className="text-xl text-slate-600 mb-16 max-w-2xl mx-auto leading-relaxed">
+              Überlassen Sie die Sauberkeit den Profis. Klicken Sie auf unsere E-Mail-Adresse, um uns direkt eine Nachricht zu senden. Wir freuen uns auf Ihre Anfrage!
+            </p>
+            
+            <div className="relative inline-block bg-white p-10 md:p-16 rounded-[3.5rem] shadow-xl shadow-slate-200/80 border border-slate-100 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 group max-w-3xl w-full">
+              <a 
+                href="mailto:info@mycleaningqueens.de" 
+                className="flex flex-col items-center gap-6"
+              >
+                <div className="w-24 h-24 bg-purple-50 rounded-3xl flex items-center justify-center text-purple-800 group-hover:bg-purple-800 group-hover:text-white group-hover:rotate-12 transition-all duration-500 shadow-inner">
+                  <Mail className="w-12 h-12" />
                 </div>
-              </div>
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-purple-800 uppercase tracking-[0.4em] block">Direkt kontaktieren</span>
+                  <span className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-slate-900 whitespace-nowrap border-b-2 border-transparent group-hover:border-purple-800 transition-all duration-300 pb-1 inline-block">
+                    info@mycleaningqueens.de
+                  </span>
+                </div>
+              </a>
+            </div>
 
-              <div className="lg:w-3/5">
-                {!submitted ? (
-                  <form onSubmit={handleSubmit} className="bg-white p-10 md:p-16 rounded-[3rem] shadow-xl border border-slate-100">
-                    <h3 className="text-3xl font-serif font-bold mb-10">Angebot anfragen</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Ansprechpartner</label>
-                        <input 
-                          type="text" 
-                          name="name"
-                          required
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                          placeholder="Vor- & Nachname"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">E-Mail Adresse</label>
-                        <input 
-                          type="email" 
-                          name="email"
-                          required
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                          placeholder="ihre@firma.de"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Firma / Institution</label>
-                        <input 
-                          type="text" 
-                          name="company"
-                          value={formData.company}
-                          onChange={handleInputChange}
-                          className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-                          placeholder="Unternehmensname"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Objekttyp</label>
-                        <select 
-                          name="buildingType"
-                          value={formData.buildingType}
-                          onChange={handleInputChange}
-                          className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all appearance-none"
-                        >
-                          <option>Bürogebäude</option>
-                          <option>Fitness Studio</option>
-                          <option>Arztpraxis / Klinik</option>
-                          <option>Kanzlei</option>
-                          <option>Sonstiges</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="mb-10 space-y-2">
-                      <label className="text-sm font-bold text-slate-700 ml-1">Zusätzliche Infos (Optional)</label>
-                      <textarea 
-                        name="message"
-                        rows={5}
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none transition-all resize-none"
-                        placeholder="Z.B. m², Reinigungsintervalle oder Sonderwünsche"
-                      ></textarea>
-                    </div>
-
-                    {error && (
-                      <div className="mb-8 p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-2">
-                        <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                        <p className="text-sm font-medium">{error}</p>
-                      </div>
-                    )}
-
-                    <button 
-                      type="submit" 
-                      disabled={loading}
-                      className="w-full py-5 bg-purple-800 hover:bg-purple-900 text-white font-bold text-xl rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 active:scale-95"
-                    >
-                      {loading ? 'Wird übermittelt...' : 'Jetzt Angebot einholen'}
-                    </button>
-                    <p className="text-center text-xs text-slate-400 mt-6 italic">
-                      Ihre Anfrage wird direkt an info@mycleaningqueens.de weitergeleitet.
-                    </p>
-                  </form>
-                ) : (
-                  <div className="bg-purple-800 text-white p-20 rounded-[4rem] text-center shadow-2xl animate-in zoom-in-95 duration-500">
-                    <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-10 border border-white/20">
-                      <CheckCircle2 className="w-12 h-12 text-white" />
-                    </div>
-                    <h3 className="text-4xl font-serif font-bold mb-6">Danke!</h3>
-                    <p className="text-purple-100 text-xl mb-12 leading-relaxed">
-                      Wir haben Ihre Anfrage erhalten. Ein Team-Mitglied von **mycleaningqueens** wird sich in Kürze mit Ihrem individuellen Angebot bei Ihnen melden.
-                    </p>
-                    <button 
-                      onClick={() => setSubmitted(false)}
-                      className="text-white border-b border-white/40 hover:border-white transition-all font-bold"
-                    >
-                      Eine weitere Nachricht senden
-                    </button>
-                  </div>
-                )}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-12 mt-16 text-slate-500 text-lg">
+              <div className="flex items-center gap-3">
+                <MapPin className="w-6 h-6 text-purple-800" />
+                <span>Kantstraße 65, 10627 Berlin</span>
               </div>
             </div>
           </div>
