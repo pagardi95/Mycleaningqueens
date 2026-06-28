@@ -15,9 +15,11 @@ import {
   Stethoscope,
   Info,
   ShieldCheck,
-  FileText
+  FileText,
+  Lock
 } from 'lucide-react';
 import { ContactFormPage } from './src/components/ContactFormPage';
+import { InvoicePage } from './src/components/InvoicePage';
 
 // Legal Content Constants - More detailed for German law compliance
 const LEGAL_CONTENT = {
@@ -294,6 +296,8 @@ export default function App() {
 
       {currentPath === '/kontaktformular' ? (
         <ContactFormPage navigateTo={navigateTo} />
+      ) : currentPath === '/rechnungen' ? (
+        <InvoicePage navigateTo={navigateTo} />
       ) : (
         <main>
           <Hero />
@@ -490,7 +494,7 @@ export default function App() {
                 Die moderne Premium-Lösung für anspruchsvolle Gebäudereinigung in Berlin.
               </p>
             </div>
-            <div className="flex gap-12 text-slate-400">
+            <div className="flex flex-wrap gap-x-8 gap-y-4 text-slate-400 justify-center md:justify-start">
               <button onClick={() => setModalContent(LEGAL_CONTENT.impressum)} className="hover:text-white transition-all flex items-center gap-2">
                 <FileText className="w-4 h-4" /> Impressum
               </button>
@@ -499,6 +503,12 @@ export default function App() {
               </button>
               <button onClick={() => setModalContent(LEGAL_CONTENT.agb)} className="hover:text-white transition-all flex items-center gap-2">
                 <FileText className="w-4 h-4" /> AGB
+              </button>
+              <button 
+                onClick={() => navigateTo('/rechnungen')} 
+                className="hover:text-white transition-all flex items-center gap-1.5 font-semibold text-purple-400 hover:text-purple-300"
+              >
+                <Lock className="w-3.5 h-3.5" /> Rechnungen
               </button>
             </div>
           </div>
