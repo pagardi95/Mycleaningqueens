@@ -38,11 +38,11 @@ const LEGAL_CONTENT = {
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Registereintrag</h4>
-          <p>Eintragung im Handelsregister.<br />Registergericht: Amtsgericht Charlottenburg (Berlin)<br />Registernummer: [Eintragen]</p>
+          <p>Eintragung im Handelsregister.<br />Registergericht: Amtsgericht Charlottenburg (Berlin)<br />Registernummer: HRB 136671 B</p>
         </div>
         <div>
-          <h4 className="font-bold text-slate-900 mb-2">Umsatzsteuer-ID</h4>
-          <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />[Eintragen]</p>
+          <h4 className="font-bold text-slate-900 mb-2">Steuernummer</h4>
+          <p>Steuernummer:<br />27/263/50099</p>
         </div>
         <div>
           <h4 className="font-bold text-slate-900 mb-2">Redaktionell verantwortlich</h4>
