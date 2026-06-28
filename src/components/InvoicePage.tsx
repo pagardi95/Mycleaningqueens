@@ -59,7 +59,10 @@ export const InvoicePage: React.FC<InvoicePageProps> = ({ navigateTo }) => {
   // Invoice state
   const [invoiceNumber, setInvoiceNumber] = useState(`RE-${new Date().getFullYear()}-${String(Math.floor(1000 + Math.random() * 9000))}`);
   const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().substring(0, 10));
-  const [serviceDate, setServiceDate] = useState(new Date().toISOString().substring(0, 10));
+  const [servicePeriod, setServicePeriod] = useState(() => {
+    const d = new Date();
+    return d.toLocaleString('de-DE', { month: 'long', year: 'numeric' });
+  });
   const [paymentTerms, setPaymentTerms] = useState<7 | 14>(14);
   const [customDescription, setCustomDescription] = useState('Gebäudereinigungsarbeiten vereinbarungsgemäß für den aktuellen Leistungszeitraum.');
   
@@ -310,7 +313,7 @@ export const InvoicePage: React.FC<InvoicePageProps> = ({ navigateTo }) => {
               <Hash className="w-3.5 h-3.5 text-purple-800" />
               Rechnungsdetails
             </h3>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-500">Rechnungsnummer</label>
                 <input 
@@ -341,12 +344,13 @@ export const InvoicePage: React.FC<InvoicePageProps> = ({ navigateTo }) => {
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[11px] font-bold text-slate-500">Leistungsdatum</label>
+                <label className="text-[11px] font-bold text-slate-500">Leistungszeitraum</label>
                 <input 
-                  type="date" 
-                  value={serviceDate}
-                  onChange={(e) => setServiceDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none text-xs font-medium"
+                  type="text" 
+                  value={servicePeriod}
+                  onChange={(e) => setServicePeriod(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-white border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none text-xs font-semibold"
+                  placeholder="z. B. Juni 2026"
                 />
               </div>
             </div>
@@ -578,8 +582,8 @@ export const InvoicePage: React.FC<InvoicePageProps> = ({ navigateTo }) => {
                   <div className="font-semibold text-slate-900">{invoiceNumber}</div>
                   <div className="font-bold text-slate-800">Rechnungsdatum:</div>
                   <div>{formatDateGerman(invoiceDate)}</div>
-                  <div className="font-bold text-slate-800">Leistungsdatum:</div>
-                  <div>{formatDateGerman(serviceDate)}</div>
+                  <div className="font-bold text-slate-800">Leistungszeitraum:</div>
+                  <div>{servicePeriod}</div>
                   <div className="font-bold text-slate-800">Fälligkeitsdatum:</div>
                   <div className="font-bold text-purple-800">{formatDateGerman(dueDate)}</div>
                 </div>
